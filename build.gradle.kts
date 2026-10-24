@@ -1,6 +1,8 @@
 import dev.detekt.gradle.extensions.FailOnSeverity
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.springframework.boot.gradle.plugin.SpringBootPlugin
+import java.io.StringReader
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlin.jvm)
@@ -11,7 +13,7 @@ plugins {
 }
 
 group = "com.autostatistic"
-version = "0.0.1-SNAPSHOT"
+version = parseAppVersion(providers.fileContents(layout.projectDirectory.file("version.properties")).asText.orNull)
 
 kotlin {
     jvmToolchain(17)
@@ -59,4 +61,36 @@ detekt {
     source.setFrom("src/main/kotlin", "src/test/kotlin")
     ignoreFailures = false
     failOnSeverity = FailOnSeverity.Error
+}
+
+/**
+ * Reads the application version from the text of `version.properties` (single source of truth, ADR-0006).
+ * Fails the build at configuration time if the file is absent, the `version` key is missing or empty,
+ * or the value is not a SemVer core `X.Y.Z`.
+ */
+fun parseAppVersion(propertiesText: String?): String {
+    // Local val on purpose: a top-level script val declared below the call site is still null when it runs.
+    val semVerCore = Regex("""^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$""")
+    if (propertiesText == null) {
+        throw GradleException(
+            "version.properties not found in the project root; it must contain 'version=X.Y.Z' (e.g. version=1.0.2)",
+        )
+    }
+    val version =
+        Properties()
+            .apply { load(StringReader(propertiesText)) }
+            .getProperty("version")
+            ?.trim()
+    if (version.isNullOrEmpty()) {
+        throw GradleException(
+            "version.properties: property 'version' is missing or empty; expected X.Y.Z (e.g. 1.0.2)",
+        )
+    }
+    if (!semVerCore.matches(version)) {
+        throw GradleException(
+            "version.properties: invalid version '$version'; expected X.Y.Z - three non-negative integers " +
+                "without leading zeros, prefix or suffix (e.g. 1.0.2)",
+        )
+    }
+    return version
 }
