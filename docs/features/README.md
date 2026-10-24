@@ -16,7 +16,7 @@
 | F-009 | Финансовая сводка по автомобилю | DRAFT | 0/2 | [F-009-car-summary](./F-009-car-summary/feature.md) |
 | F-010 | Аналитика по бизнесу | DRAFT | 0/3 | [F-010-business-analytics](./F-010-business-analytics/feature.md) |
 | F-011 | Проверка безопасности и готовность MVP к запуску | DRAFT | 0/4 | [F-011-mvp-security-readiness](./F-011-mvp-security-readiness/feature.md) |
-| F-012 | Версионирование приложения | IN_PROGRESS | 1/3 | [F-012-app-versioning](./F-012-app-versioning/feature.md) |
+| F-012 | Версионирование приложения | IN_PROGRESS | 2/3 | [F-012-app-versioning](./F-012-app-versioning/feature.md) |
 
 Фичи F-002…F-011 — MVP из [`docs/PRD.md`](../PRD.md). Номер фичи совпадает с порядком реализации: каждая фича
 опирается только на предыдущие. Карта и обоснование порядка — PRD, раздел 12.
