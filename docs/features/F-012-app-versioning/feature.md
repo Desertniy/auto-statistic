@@ -99,7 +99,7 @@
 |-----|----------|--------|------------|
 | T01 | [version.properties, CHANGELOG и версия в имени jar](./T01-version-source-and-changelog.md) | DONE | — |
 | T02 | [Версия приложения в GET /actuator/info](./T02-runtime-version-visibility.md) | READY | F-012/T01 |
-| T03 | [Правило поднятия версии и записи в CHANGELOG в регламенте](./T03-versioning-process-rule.md) | IN_TESTING | F-012/T01 |
+| T03 | [Правило поднятия версии и записи в CHANGELOG в регламенте](./T03-versioning-process-rule.md) | IN_REVIEW | F-012/T01 |
 
 Порядок реализации (рекомендация): T01 → T03 → T02 (правило попадает в регламент как можно раньше; T02 и T03
 друг от друга не зависят). Ожидаемые версии при слиянии в этом порядке: T01 — `1.0.3`, T03 — `1.0.4`, T02 — `1.0.5`.
@@ -144,3 +144,4 @@
 | 2026-10-24 | kotlin-backend-developer | READY → IN_PROGRESS | Начата разработка F-012/T01 (ветка `F-012/T01` от `main`) |
 | 2026-10-24 | tech-lead | — (фича IN_PROGRESS) | Ревью кода F-012/T01: IN_REVIEW → IN_TESTING (0 blocker, 0 major, 2 minor) |
 | 2026-10-24 | qa-engineer | — (фича IN_PROGRESS) | Тестирование F-012/T01: IN_TESTING → DONE (16 кейсов, дефектов нет); фича остаётся IN_PROGRESS — T02, T03 в READY |
+| 2026-10-24 | kotlin-backend-developer | — (фича IN_PROGRESS) | F-012/T03: доработка 2 minor ревью кода в `WORKFLOW.md` §7 до QA, IN_TESTING → IN_PROGRESS → IN_REVIEW |

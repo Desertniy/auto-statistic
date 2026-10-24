@@ -2,7 +2,7 @@
 
 | Поле        | Значение                         |
 |-------------|----------------------------------|
-| Статус      | IN_TESTING                       |
+| Статус      | IN_REVIEW                        |
 | Фича        | [F-012](./feature.md)            |
 | Тип         | tech                             |
 | Зависит от  | F-012/T01                        |
@@ -168,6 +168,12 @@
   `F-NNN/TNN~1:version.properties`; (3) mermaid-схема в `WORKFLOW.md` не перенесена — шаги исчерпывающие, схема
   остаётся в architecture.md (её ветка «сразу merge» уточнена текстом шага 3); (4) в `feature.md` команды п. 5
   дополнен текущей версией в сводке; в qa-engineer оговорены временные правки для негативных проверок.
+- **Дополнение (minor ревью кода, до QA):** (1) `WORKFLOW.md` §7 шаг 3 — при повторном запуске V(main) сверяется
+  со значением `version` из `git show F-NNN/TNN~1:version.properties` (версия до коммита поднятия) во всех случаях,
+  а не «V − 1» (корректно и для major/minor); без `version.properties` в `main` — достаточно merge-base. Отклонение (2)
+  выше этим заменено. (2) Шаг 4 — вливание `main` в отставшую ветку:
+  `git merge --no-ff main -m "F-NNN/TNN: влит main перед слиянием"` + `Co-Authored-By`, без `--no-verify`.
+  Замечание про устаревший «Поток 3» в architecture.md — к architect, не трогалось. `./gradlew clean build` зелёный.
 
 <!-- ============ tech-lead ============ -->
 ## Ревью кода
@@ -220,3 +226,5 @@
 | 2026-10-24 | kotlin-backend-developer | READY → IN_PROGRESS | Начата разработка (ветка `F-012/T03` от `main`; T01 слита — `b666d07`) |
 | 2026-10-24 | kotlin-backend-developer | IN_PROGRESS → IN_REVIEW | Правило версии в `WORKFLOW.md` §2, §4–§7 (8 шагов, 3 обязательных дополнения + 2 minor ревью плана, критерий актуальности по merge-base и случай без `version.properties` в `main`), `feature.md` команды, developer/qa/tech-lead; `./gradlew clean build` зелёный |
 | 2026-10-24 | tech-lead | IN_REVIEW → IN_TESTING | Ревью кода: 0 blocker, 0 major, 3 minor (V − 1 для major/minor-коммита версии → сверка с `~1`; сообщение коммита при вливании `main` в ветку; устаревший «Поток 3» в architecture.md → architect, не блокирует). Обязательные дополнения ревью плана выполнены; grep и merge-base проверены на `main`; `./gradlew clean build` зелёный. Статус T03 в таблице `feature.md` обновлён (был `READY`) |
+| 2026-10-24 | kotlin-backend-developer | IN_TESTING → IN_PROGRESS | Доработка по 2 minor ревью кода до QA (не круг CHANGES_REQUESTED) |
+| 2026-10-24 | kotlin-backend-developer | IN_PROGRESS → IN_REVIEW | minor 1: шаг 3 — сверка V(main) с `F-NNN/TNN~1:version.properties` вместо «V − 1»; minor 2: шаг 4 — сообщение `F-NNN/TNN: влит main перед слиянием` + Co-Authored-By; minor 3 (architecture.md) — к architect. `./gradlew clean build` зелёный |
