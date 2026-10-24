@@ -97,7 +97,7 @@
 ## Задачи
 | ID  | Название | Статус | Зависит от |
 |-----|----------|--------|------------|
-| T01 | [version.properties, CHANGELOG и версия в имени jar](./T01-version-source-and-changelog.md) | IN_TESTING | — |
+| T01 | [version.properties, CHANGELOG и версия в имени jar](./T01-version-source-and-changelog.md) | DONE | — |
 | T02 | [Версия приложения в GET /actuator/info](./T02-runtime-version-visibility.md) | READY | F-012/T01 |
 | T03 | [Правило поднятия версии и записи в CHANGELOG в регламенте](./T03-versioning-process-rule.md) | READY | F-012/T01 |
 
@@ -143,3 +143,4 @@
 | 2026-10-24 | tech-lead | DESIGN → READY | Ревью плана T01–T03: все READY; порядок T01 → T03 → T02 подтверждён. Обязательные уточнения: T01 — инициализация regex в скрипте; T03 / «Поток 3» — проверка базы при повторе, `merge --abort`, отставшая ветка (применяются оркестратором уже при слиянии T01) |
 | 2026-10-24 | kotlin-backend-developer | READY → IN_PROGRESS | Начата разработка F-012/T01 (ветка `F-012/T01` от `main`) |
 | 2026-10-24 | tech-lead | — (фича IN_PROGRESS) | Ревью кода F-012/T01: IN_REVIEW → IN_TESTING (0 blocker, 0 major, 2 minor) |
+| 2026-10-24 | qa-engineer | — (фича IN_PROGRESS) | Тестирование F-012/T01: IN_TESTING → DONE (16 кейсов, дефектов нет); фича остаётся IN_PROGRESS — T02, T03 в READY |
