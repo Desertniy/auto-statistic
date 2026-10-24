@@ -1,0 +1,6 @@
+spring:
+  application.name: auto-statistic
+  mvc.problemdetails.enabled: true
+management:
+  endpoints.web.exposure.include: health
+  endpoint.health.show-details: never

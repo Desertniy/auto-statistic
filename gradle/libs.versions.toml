@@ -1,0 +1,28 @@
+[versions]
+kotlin = "2.3.21"
+spring-boot = "4.1.2"
+kotest = "6.2.6"
+ktlint = "1.8.0"
+ktlint-gradle = "14.2.0"
+detekt = "2.0.0-alpha.3"
+
+[libraries]
+spring-boot-starter-webmvc = { module = "org.springframework.boot:spring-boot-starter-webmvc" }
+spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator" }
+jackson-module-kotlin = { module = "tools.jackson.module:jackson-module-kotlin" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
+spring-boot-starter-webmvc-test = { module = "org.springframework.boot:spring-boot-starter-webmvc-test" }
+spring-boot-starter-actuator-test = { module = "org.springframework.boot:spring-boot-starter-actuator-test" }
+spring-boot-resttestclient = { module = "org.springframework.boot:spring-boot-resttestclient" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+kotest-bom = { module = "io.kotest:kotest-bom", version.ref = "kotest" }
+kotest-runner-junit6 = { module = "io.kotest:kotest-runner-junit6" }
+kotest-assertions-core = { module = "io.kotest:kotest-assertions-core" }
+kotest-extensions-spring = { module = "io.kotest:kotest-extensions-spring" }
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
+spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint-gradle" }
+detekt = { id = "dev.detekt", version.ref = "detekt" }

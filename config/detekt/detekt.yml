@@ -1,0 +1,15 @@
+# Дельта к дефолтному конфигу detekt (buildUponDefaultConfig = true), ADR-0004.
+style:
+  MaxLineLength:
+    active: false # длиной строки владеет ktlint (.editorconfig max_line_length)
+  ForbiddenImport:
+    active: true # тесты только на Kotest (ADR-0005)
+    forbiddenImports:
+      - value: 'org.junit.*'
+        reason: 'Tests are Kotest specs (ADR-0005); JUnit API must not be used directly.'
+      - value: 'org.assertj.*'
+        reason: 'Use Kotest assertions (ADR-0005).'
+      - value: 'org.hamcrest.*'
+        reason: 'Use Kotest assertions (ADR-0005).'
+      - value: 'kotlin.test.*'
+        reason: 'Use Kotest assertions (ADR-0005).'
