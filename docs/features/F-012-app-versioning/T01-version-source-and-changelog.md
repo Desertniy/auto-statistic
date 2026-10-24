@@ -2,7 +2,7 @@
 
 | Поле        | Значение                         |
 |-------------|----------------------------------|
-| Статус      | READY                            |
+| Статус      | DONE                             |
 | Фича        | [F-012](./feature.md)            |
 | Тип         | tech                             |
 | Зависит от  | —                                |
@@ -31,29 +31,29 @@
 его делает оркестратор отдельным коммитом в ветке задачи после согласия пользователя на слияние (решение Q2).
 
 ## Критерии приёмки
-- [ ] AC-1: Given ветка задачи, When открыть корень репозитория, Then есть `version.properties` с версией `1.0.2`
+- [x] AC-1: Given ветка задачи, When открыть корень репозитория, Then есть `version.properties` с версией `1.0.2`
   и `CHANGELOG.md`, в начале которого описан формат записи `<версия> <F-NNN/TNN> <описание>`.
-- [ ] AC-2: Given `CHANGELOG.md`, When прочитать записи, Then есть ровно три записи, по одной на F-001/T01, T02, T03,
+- [x] AC-2: Given `CHANGELOG.md`, When прочитать записи, Then есть ровно три записи, по одной на F-001/T01, T02, T03,
   с версиями `1.0.0`, `1.0.1`, `1.0.2` соответственно, упорядоченные от новой к старой; описания дословно совпадают
   с названиями задач в заголовках файлов `docs/features/F-001-project-bootstrap/T0N-*.md`; каждая запись — одна строка
   вида «версия, пробел, id задачи, пробел, описание».
-- [ ] AC-3: Given `CHANGELOG.md` и `version.properties`, When сравнить, Then версия в `version.properties` равна версии
+- [x] AC-3: Given `CHANGELOG.md` и `version.properties`, When сравнить, Then версия в `version.properties` равна версии
   самой свежей записи `CHANGELOG.md`.
-- [ ] AC-4: Given `version.properties` = `1.0.2`, When выполнить `./gradlew build` (и `gradlew.bat build` на Windows),
+- [x] AC-4: Given `version.properties` = `1.0.2`, When выполнить `./gradlew build` (и `gradlew.bat build` на Windows),
   Then сборка зелёная, а в каталоге артефактов есть исполняемый jar приложения, имя которого содержит `1.0.2`
   (например, `auto-statistic-1.0.2.jar`; точный шаблон имени — по плану architect).
-- [ ] AC-5: Given jar из AC-4, When запустить его (`java -jar <jar>`), Then приложение стартует и
+- [x] AC-5: Given jar из AC-4, When запустить его (`java -jar <jar>`), Then приложение стартует и
   `GET /actuator/health` отвечает `200` `{"status":"UP"}`.
-- [ ] AC-6: Given в `version.properties` вручную поставлено `1.0.7`, When пересобрать, Then имя jar содержит `1.0.7`
+- [x] AC-6: Given в `version.properties` вручную поставлено `1.0.7`, When пересобрать, Then имя jar содержит `1.0.7`
   (и не содержит прежнюю версию); других файлов для смены версии править не нужно.
-- [ ] AC-7: Given поиск по репозиторию (исходники, конфигурация, файлы сборки), When искать `0.0.1-SNAPSHOT` и
+- [x] AC-7: Given поиск по репозиторию (исходники, конфигурация, файлы сборки), When искать `0.0.1-SNAPSHOT` и
   захардкоженные номера версии приложения, Then их нет — версия задаётся только в `version.properties`.
-- [ ] AC-8 (негативный): Given `version.properties` отсутствует, или ключ версии пуст, или значение не в формате
+- [x] AC-8 (негативный): Given `version.properties` отсутствует, или ключ версии пуст, или значение не в формате
   `X.Y.Z` (например, `1.0`, `1.0.x`, `v1.0.0`, `1.0.0-SNAPSHOT`), When выполнить `./gradlew build`, Then сборка падает
   с понятным сообщением, что версия в `version.properties` отсутствует/некорректна (Допущение, Q10 фичи).
-- [ ] AC-9 (граничный): Given значения `0.0.0` и `10.20.300`, When выполнить сборку, Then они принимаются как
+- [x] AC-9 (граничный): Given значения `0.0.0` и `10.20.300`, When выполнить сборку, Then они принимаются как
   корректные и попадают в имя jar.
-- [ ] AC-10: Given изменения задачи, When выполнить `./gradlew build`, Then существующие проверки (тесты Kotest,
+- [x] AC-10: Given изменения задачи, When выполнить `./gradlew build`, Then существующие проверки (тесты Kotest,
   ktlint, detekt) проходят.
 
 ## Открытые вопросы
@@ -136,23 +136,106 @@
 
 <!-- ============ kotlin-backend-developer ============ -->
 ## Реализация
-- **Изменённые файлы:** ...
-- **Что сделано:** ...
-- **Тесты:** какие добавлены, как запустить
-- **Отклонения от плана:** (и почему)
+- **Ветка:** `F-012/T01` (от `main` @ `a130975`).
+- **Изменённые файлы:**
+  - `version.properties` (новый; ASCII, LF) — два комментария + `version=1.0.2`, дословно по architecture.md.
+  - `CHANGELOG.md` (новый; UTF-8, LF) — `# Changelog`, абзац о формате со ссылкой на `docs/WORKFLOW.md` (раздел 7),
+    три записи F-001 (`1.0.2` → `1.0.1` → `1.0.0`) через пустую строку; названия дословно из заголовков
+    `docs/features/F-001-project-bootstrap/T0N-*.md`. Запись `1.0.3 F-012/T01` не добавлена (шаг оркестратора).
+  - `build.gradle.kts` — литерал `0.0.1-SNAPSHOT` заменён на
+    `version = parseAppVersion(providers.fileContents(layout.projectDirectory.file("version.properties")).asText.orNull)`
+    (на прежнем месте, после `group`); импорты `java.io.StringReader`, `java.util.Properties`; в конце скрипта —
+    top-level `fun parseAppVersion(propertiesText: String?): String` с KDoc.
+  - Документы: статус задачи; `feature.md` (фича → `IN_PROGRESS`, T01 → `IN_REVIEW` в таблице задач, строка журнала);
+    `docs/features/README.md` (F-012 → `IN_PROGRESS`).
+- **Что сделано:**
+  - `parseAppVersion`: `null` (нет файла) → `GradleException` «not found»; `Properties.load(StringReader)` →
+    `getProperty("version")?.trim()`; `null`/пусто → «missing or empty»; несоответствие SemVer-ядру → «invalid version '<v>'».
+    Каждое сообщение называет файл, проблему, ожидаемый формат и пример `1.0.2` (minor 4 ревью плана).
+  - **Обязательное уточнение ревью плана (п. 1):** regex `semVerCore` — локальный `val` внутри `parseAppVersion`
+    (не top-level `val` ниже вызова); проверено `./gradlew help -q` с `version=1.0.2` — зелёный, `version: 1.0.2`.
+  - Чтение только через `providers.fileContents` (без `File`/`readText`/`afterEvaluate`); `archiveVersion`/`archiveFileName`
+    не трогались — имя jar по конвенции Boot.
+- **Тесты:** новых автотестов нет (по плану: логика в build-скрипте, TestKit отклонён). Запуск: `./gradlew clean build`
+  (Windows: `gradlew.bat clean build`). Результаты прогона 2026-10-24:
+  - AC-4/AC-10: `./gradlew clean build` — `BUILD SUCCESSFUL`, 10/10 тестов Kotest PASSED, `ktlintMainSourceSetCheck`,
+    `ktlintTestSourceSetCheck`, `ktlintKotlinScriptCheck`, `detekt` — зелёные; `build/libs`: `auto-statistic-1.0.2.jar`,
+    `auto-statistic-1.0.2-plain.jar`. `gradlew.bat clean build` — `BUILD SUCCESSFUL`, те же jar.
+  - AC-5: `java -jar build/libs/auto-statistic-1.0.2.jar --server.port=18082` → `GET /actuator/health` = `200`,
+    `{"groups":["liveness","readiness"],"status":"UP"}` (поле `groups` — штатное поведение F-001, без изменений).
+  - AC-6/AC-9: `version=1.0.7` / `0.0.0` / `10.20.300` → `clean bootJar jar` → `auto-statistic-<v>.jar` и `-plain.jar`
+    только с новой версией; `1.0.2 ` (хвостовой пробел) → `1.0.2`.
+  - AC-8: нет файла; `version=`; `version=   `; нет ключа; `1.0`, `1.0.x`, `v1.0.0`, `1.0.0-SNAPSHOT`, `01.0.0`,
+    `1.0.0.0`, `1.-1.0` → exit 1 с соответствующим сообщением о `version.properties` (проверено через `help -q`, для
+    `1.0` — и через `./gradlew build`: `BUILD FAILED`). Временные правки откачены, `version.properties` = `1.0.2`.
+  - AC-7: `git grep -n "0.0.1-SNAPSHOT" -- '*.kts' '*.properties' '*.yaml' '*.yml' src gradle config` — пусто;
+    `git grep -nE 'version\s*=\s*"[0-9]' -- '*.kts' src` — пусто; в `docs/` — только исторические упоминания (minor 2).
+  - Configuration cache: `help --configuration-cache` дважды — «Configuration cache entry reused»; после правки версии —
+    «cannot be reused because file 'version.properties' has changed».
+  - AC-1/AC-2/AC-3: проверены чтением файлов (верхняя запись `CHANGELOG.md` = `1.0.2` = `version.properties`).
+- **Отклонения от плана:** нет. Поле «Ветка» в шапку задачи не добавлено — `docs/WORKFLOW.md` §7: «отдельное поле в
+  файле задачи не ведётся — имя ветки равно id задачи».
 
 <!-- ============ tech-lead ============ -->
 ## Ревью кода
-- Вердикт: — (IN_TESTING / CHANGES_REQUESTED)
+- Вердикт: **IN_TESTING** (круг 1; blocker 0, major 0, minor 2)
+- База: `main` @ `a130975`; `git log main..F-012/T01` — один коммит `b825d90`; всё, что относится к задаче, закоммичено.
+- Проверено ревьюером (2026-10-24):
+  - `./gradlew clean build` — `BUILD SUCCESSFUL` (10 тестов Kotest PASSED, `ktlint*Check` включая `ktlintKotlinScriptCheck`,
+    `detekt`); `build/libs`: `auto-statistic-1.0.2.jar`, `auto-statistic-1.0.2-plain.jar` (AC-4, AC-10).
+  - Обязательное уточнение ревью плана п. 1 выполнено: regex `semVerCore` — локальный `val` внутри `parseAppVersion`;
+    валидная версия `1.0.2` разбирается (`build`, `help` зелёные).
+  - `help -q` с временными значениями: `1.0`, `v1.0.0`, `1.0.0-SNAPSHOT`, `01.0.0` → «invalid version '<v>'»; `version=`
+    и файл без ключа → «missing or empty»; нет файла → «not found»; все — `BUILD FAILED` (AC-8). `0.0.0`, `10.20.300` →
+    `project.version` с этим значением (AC-9). Сообщения содержат имя файла, проблему, формат и пример (minor 4 плана).
+  - Configuration cache: `help --configuration-cache` — stored → reused; после правки версии — «cannot be reused because
+    file 'version.properties' has changed». Чтение только через `providers.fileContents`, без `File`/`afterEvaluate`.
+  - AC-7: `git grep "0.0.1-SNAPSHOT"` по `*.kts`, `*.properties`, `*.yaml`, `*.yml`, `src`, `gradle`, `config` — пусто;
+    литералов версии в `*.kts`/`src` нет.
+  - AC-1–AC-3: `version.properties` — ASCII, LF, `version=1.0.2`; `CHANGELOG.md` — UTF-8, LF, текст по architecture.md,
+    3 записи F-001 дословно по заголовкам файлов задач, верхняя `1.0.2` = `version.properties`. Записи `1.0.3` нет —
+    штатно (шаг оркестратора при слиянии).
+  - Временные правки `version.properties` откачены, рабочее дерево чистое.
 - Замечания (`[blocker]` / `[major]` / `[minor]`, файл:строка):
+  - [minor] `build.gradle.kts:79` — локальная `val version` внутри `parseAppVersion` затеняет `Project.version` скрипта;
+    работает корректно, но при чтении легко спутать. → При следующей правке скрипта (T02) переименовать в `rawVersion`/`value`;
+    в этой задаче править не обязательно.
+  - [minor] `docs/features/F-012-app-versioning/feature.md:144` — в журнале фичи нет строки о переходе T01 в `IN_REVIEW`
+    (в таблице задач статус обновлён, в журнале задачи строка есть). → При смене статуса задачи добавлять строку и в
+    журнал фичи; отдельной правки не требуется.
 
 <!-- ============ qa-engineer ============ -->
 ## Тестирование
+Окружение: Windows 11, JDK 17 (toolchain), Gradle 9.3.1 (wrapper), ветка `F-012/T01` @ `4fd6405`, 2026-10-24.
+Временные правки `version.properties` делались с резервной копией вне репозитория и откачены; рабочее дерево чистое.
+
 | Кейс | Проверяет AC | Тип (auto/manual) | Результат |
 |------|--------------|-------------------|-----------|
+| TC-01 `version.properties` в корне: ASCII, LF, `version=1.0.2`; `CHANGELOG.md` в корне (UTF-8, LF), в начале — формат `<версия> <F-NNN/TNN> <название задачи>` и ссылка на `docs/WORKFLOW.md` | AC-1 | manual | PASS |
+| TC-02 В `CHANGELOG.md` ровно 3 строки по regex `^\d+\.\d+\.\d+ F-\d{3}/T\d{2} .+$`; порядок 1.0.2 → 1.0.1 → 1.0.0; описания дословно (`grep -x`) совпадают с заголовками `F-001-project-bootstrap/T0N-*.md` | AC-2 | manual (скрипт) | PASS |
+| TC-03 Верхняя запись `CHANGELOG.md` (`1.0.2`) = `version.properties` | AC-3 | manual | PASS |
+| TC-04 `./gradlew clean build` → `BUILD SUCCESSFUL`, `build/libs`: `auto-statistic-1.0.2.jar`, `auto-statistic-1.0.2-plain.jar`; в MANIFEST `Implementation-Version: 1.0.2` | AC-4 | manual | PASS |
+| TC-05 `gradlew.bat clean build` (PowerShell) → `BUILD SUCCESSFUL`, те же jar | AC-4 | manual | PASS |
+| TC-06 Чистый клон ветки во временный каталог → `./gradlew clean build` → `BUILD SUCCESSFUL`, `auto-statistic-1.0.2.jar`; `git ls-files --eol`: оба файла `eol=lf` | AC-4, AC-1 | manual | PASS |
+| TC-07 `java -jar build/libs/auto-statistic-1.0.2.jar --server.port=18093` → `GET /actuator/health` = `200` `{"groups":["liveness","readiness"],"status":"UP"}` (поле `groups` — штатно с F-001); процесс остановлен | AC-5 | manual | PASS |
+| TC-08 `version=1.0.7` → `clean bootJar jar` → в `build/libs` только `auto-statistic-1.0.7.jar` и `-plain.jar`; правился один файл | AC-6 | manual | PASS |
+| TC-09 Граничные `0.0.0`, `10.20.300` → jar с этой версией | AC-9 | manual | PASS |
+| TC-10 Допустимые вариации синтаксиса properties: CRLF + комментарий + хвостовой пробел (`1.0.4 ` → `1.0.4`), `version: 2.3.4`, без завершающего перевода строки → jar с версией | AC-6, AC-9 | manual | PASS |
+| TC-11 Нет файла → `BUILD FAILED`: «version.properties not found in the project root; it must contain 'version=X.Y.Z' (e.g. version=1.0.2)» | AC-8 | manual | PASS |
+| TC-12 `version=`, `version=   `, пустой файл, нет ключа (`foo=1.0.2`) → `BUILD FAILED`: «property 'version' is missing or empty; expected X.Y.Z (e.g. 1.0.2)» | AC-8 | manual | PASS |
+| TC-13 `1.0`, `1.0.x`, `v1.0.0`, `1.0.0-SNAPSHOT`, `01.0.0`, `1.0.0.0`, `1.0.-1`, `1. 0.2`, `1.0.2+build`, `1.0.2x`, полноширинная цифра `１.0.2` → `BUILD FAILED`: «invalid version '<v>'; expected X.Y.Z ... (e.g. 1.0.2)» (полноширинная цифра в консоли выводится как `?` — кодировка вывода, не дефект) | AC-8 | manual | PASS |
+| TC-14 `git grep "0.0.1-SNAPSHOT"` по `*.kts`, `*.properties`, `*.yaml`, `*.yml`, `*.toml`, `src`, `gradle`, `config` — пусто; в `docs/` — только исторические упоминания (ADR-0002, ADR-0006, F-001, F-012); `1.0.2` в `build.gradle.kts` — только пример в текстах ошибок, не источник версии; ссылок на имя jar с версией вне `docs/features` нет | AC-7 | manual | PASS |
+| TC-15 Configuration cache: `properties --configuration-cache` stored → reused; после правки версии — «cannot be reused because file 'version.properties' has changed» и новая версия; невалидная версия при включённом cache → ошибка о `version.properties`; после восстановления — снова stored → reused | AC-6 (риск плана) | manual | PASS |
+| TC-16 `./gradlew clean build`: 10/10 тестов Kotest PASSED, `ktlintMainSourceSetCheck`, `ktlintTestSourceSetCheck`, `ktlintKotlinScriptCheck`, `detekt` — зелёные | AC-10 | auto | PASS |
 
-- Вердикт: — (DONE / CHANGES_REQUESTED)
-- Найденные дефекты (шаги, ожидаемо, фактически):
+- Итого: 16 кейсов (auto 1 — существующий набор Kotest/ktlint/detekt, manual 15). Новых автотестов не добавлено:
+  логика в build-скрипте, TestKit отклонён планом (architecture.md, «Альтернативы»); негативные и граничные сценарии
+  проверены вручную по таблице выше.
+- Вердикт: **DONE** — AC-1…AC-10 подтверждены, сборка зелёная.
+- Найденные дефекты: нет. Отсутствие версии `1.0.3` и строки `F-012/T01` в `CHANGELOG.md` — штатно (шаг оркестратора
+  при слиянии), не дефект.
+- Предложение (не дефект, на усмотрение T03): регрессию AC-3 (верхняя запись `CHANGELOG.md` = `version.properties`)
+  можно закрепить простым Kotest-тестом, читающим оба файла, — тогда ручная ошибка при поднятии версии ловится сборкой.
 
 ## Журнал
 | Дата | Агент | Изменение статуса | Комментарий |
@@ -162,3 +245,7 @@
 | 2026-10-24 | product-manager | DRAFT (без изменений) | Ответы пользователя Q2 (а), Q3a (б): CHANGELOG с ретроспективой F-001 возвращён в T01 (иначе при слиянии T01 по правилу Q2 некуда записать строку `1.0.3 F-012/T01`); стартовые значения зафиксированы: `version.properties` = `1.0.2`, записи F-001 = `1.0.0`/`1.0.1`/`1.0.2` |
 | 2026-10-24 | architect | DRAFT → PLAN_REVIEW | Технический план: `version.properties` (ASCII, ключ `version`) читается через `providers.fileContents`, валидация SemVer-ядра в `build.gradle.kts` с `GradleException`; имя jar — конвенция Boot `auto-statistic-<v>.jar`; формат `CHANGELOG.md` (пустая строка между записями); ADR-0006, заметка в ADR-0002. AC не менялись |
 | 2026-10-24 | tech-lead | PLAN_REVIEW → READY | Ревью плана: READY. Чтение через `providers.fileContents`, configuration cache (reuse + инвалидация), негативные сценарии и ktlint на `*.gradle.kts` проверены экспериментом во временной копии. Обязательно: regex — локальный `val` в функции или выше строки `version = ...` (top-level `val` ниже вызова = NPE, воспроизведено); 3 minor |
+| 2026-10-24 | kotlin-backend-developer | READY → IN_PROGRESS | Ветка `F-012/T01` создана от `main` (`a130975`) |
+| 2026-10-24 | kotlin-backend-developer | IN_PROGRESS → IN_REVIEW | `version.properties` (1.0.2), `CHANGELOG.md` (3 записи F-001), `parseAppVersion` в `build.gradle.kts` (regex — локальный `val`, сообщения с примером). `clean build` зелёный (10/10 тестов, ktlint, detekt) на `gradlew` и `gradlew.bat`; AC-5–AC-9 и configuration cache проверены вручную, временные правки откачены |
+| 2026-10-24 | tech-lead | IN_REVIEW → IN_TESTING | Ревью кода, круг 1: blocker 0, major 0, minor 2. `clean build` зелёный, jar `auto-statistic-1.0.2.jar`; regex — локальный `val` (уточнение плана выполнено); негативные/граничные значения, сообщения и configuration cache (reuse + инвалидация) проверены вручную |
+| 2026-10-24 | qa-engineer | IN_TESTING → DONE | 16 кейсов (1 auto, 15 manual): `clean build` зелёный на `gradlew`/`gradlew.bat` и в чистом клоне, jar `auto-statistic-1.0.2.jar` стартует, health 200 UP; 17 негативных и граничные значения версии, configuration cache, AC-7 — PASS; дефектов нет |

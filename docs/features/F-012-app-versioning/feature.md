@@ -2,7 +2,7 @@
 
 | Поле     | Значение                                   |
 |----------|--------------------------------------------|
-| Статус   | READY                                      |
+| Статус   | IN_PROGRESS                                |
 | Автор    | product-manager                            |
 | Создана  | 2026-10-24                                 |
 | Приоритет| Should                                     |
@@ -97,7 +97,7 @@
 ## Задачи
 | ID  | Название | Статус | Зависит от |
 |-----|----------|--------|------------|
-| T01 | [version.properties, CHANGELOG и версия в имени jar](./T01-version-source-and-changelog.md) | READY | — |
+| T01 | [version.properties, CHANGELOG и версия в имени jar](./T01-version-source-and-changelog.md) | DONE | — |
 | T02 | [Версия приложения в GET /actuator/info](./T02-runtime-version-visibility.md) | READY | F-012/T01 |
 | T03 | [Правило поднятия версии и записи в CHANGELOG в регламенте](./T03-versioning-process-rule.md) | READY | F-012/T01 |
 
@@ -141,3 +141,6 @@
 | 2026-10-24 | product-manager | DRAFT (без изменений) | Ответы пользователя: Q2 (а), Q3a (б), Q4 уточнён (имя jar + `/actuator/info`, без лога старта). CHANGELOG с ретроспективой F-001 возвращён в T01 (нужен к моменту слияния T01); T02 = версия в `/actuator/info` (файл `T02-runtime-version-visibility.md` восстановлен); `T02-changelog-retrospective.md` упразднён. Из «Не входит» убран показ версии в `/actuator/info`. Блокирующих вопросов нет |
 | 2026-10-24 | architect | DRAFT → DESIGN | `architecture.md`, ADR-0006 (+ заметки в ADR-0002 п. 6, ADR-0003 п. 3), `overview.md`; технические планы T01–T03 → `PLAN_REVIEW`. Декомпозиция и AC без изменений; порядок T01 → T03 → T02 подтверждён. Допущение Q10 принято технически (валидация формата в `build.gradle.kts`, сборка падает на конфигурации). Поле версии в `/actuator/info` — `build.version`; discovery `/actuator` отключается |
 | 2026-10-24 | tech-lead | DESIGN → READY | Ревью плана T01–T03: все READY; порядок T01 → T03 → T02 подтверждён. Обязательные уточнения: T01 — инициализация regex в скрипте; T03 / «Поток 3» — проверка базы при повторе, `merge --abort`, отставшая ветка (применяются оркестратором уже при слиянии T01) |
+| 2026-10-24 | kotlin-backend-developer | READY → IN_PROGRESS | Начата разработка F-012/T01 (ветка `F-012/T01` от `main`) |
+| 2026-10-24 | tech-lead | — (фича IN_PROGRESS) | Ревью кода F-012/T01: IN_REVIEW → IN_TESTING (0 blocker, 0 major, 2 minor) |
+| 2026-10-24 | qa-engineer | — (фича IN_PROGRESS) | Тестирование F-012/T01: IN_TESTING → DONE (16 кейсов, дефектов нет); фича остаётся IN_PROGRESS — T02, T03 в READY |
