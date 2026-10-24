@@ -2,7 +2,7 @@
 
 | Поле        | Значение                         |
 |-------------|----------------------------------|
-| Статус      | IN_REVIEW                        |
+| Статус      | IN_TESTING                       |
 | Фича        | [F-012](./feature.md)            |
 | Тип         | tech                             |
 | Зависит от  | F-012/T01                        |
@@ -206,6 +206,13 @@
      ограничивает действие «до слияния T03», но читатель может взять устаревший алгоритм. → Добавить под заголовком
      строку «После слияния F-012/T03 нормативный текст — `docs/WORKFLOW.md` §7, „Версия и CHANGELOG при слиянии
      задачи“; схема ниже — упрощённая спецификация» (или поправить узел D). Переносить mermaid в `WORKFLOW.md` не нужно.
+- Повторное ревью (коммиты `7c826d5`, `12e06fe`; `git diff c46c548..F-012/T03`): **IN_TESTING**, новых замечаний нет.
+  minor 1 закрыт — шаг 3 сверяет V(main) с `F-NNN/TNN~1:version.properties` (верно и для major/minor), без файла
+  в `main` — только merge-base; minor 2 закрыт — шаг 4 задаёт `-m "F-NNN/TNN: влит main перед слиянием"` +
+  `Co-Authored-By`, без `--no-verify`; minor 3 закрыт architect — «Поток 3» помечен как упрощённая спецификация с
+  приоритетом WORKFLOW §7, mermaid согласован с шагами 3, 4, 7 (узел D2, merge-base, `merge --abort`), ADR-0006
+  п. 6 ссылается на §7. Противоречий между WORKFLOW §7, architecture.md и ADR-0006 нет. `./gradlew clean build` —
+  BUILD SUCCESSFUL.
 
 <!-- ============ qa-engineer ============ -->
 ## Тестирование
@@ -229,3 +236,4 @@
 | 2026-10-24 | kotlin-backend-developer | IN_TESTING → IN_PROGRESS | Доработка по 2 minor ревью кода до QA (не круг CHANGES_REQUESTED) |
 | 2026-10-24 | kotlin-backend-developer | IN_PROGRESS → IN_REVIEW | minor 1: шаг 3 — сверка V(main) с `F-NNN/TNN~1:version.properties` вместо «V − 1»; minor 2: шаг 4 — сообщение `F-NNN/TNN: влит main перед слиянием` + Co-Authored-By; minor 3 (architecture.md) — к architect. `./gradlew clean build` зелёный |
 | 2026-10-24 | architect | IN_REVIEW (без изменений) | minor 3 ревью кода: architecture.md «Поток 3» — пометка, что после слияния T03 нормативен WORKFLOW §7 (схема — упрощённая спецификация); схема приведена в соответствие с §7 (узел D: проверка коммита версии, merge-base и сверка V(main) с `~1:version.properties`; актуальность по merge-base; `merge --abort`). ADR-0006, решение 6 — та же ссылка на §7 |
+| 2026-10-24 | tech-lead | IN_REVIEW → IN_TESTING | Повторное ревью `7c826d5`, `12e06fe`: minor 1–3 закрыты, новых замечаний нет; `./gradlew clean build` зелёный |

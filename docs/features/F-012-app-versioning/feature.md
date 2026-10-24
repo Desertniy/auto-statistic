@@ -99,7 +99,7 @@
 |-----|----------|--------|------------|
 | T01 | [version.properties, CHANGELOG и версия в имени jar](./T01-version-source-and-changelog.md) | DONE | — |
 | T02 | [Версия приложения в GET /actuator/info](./T02-runtime-version-visibility.md) | READY | F-012/T01 |
-| T03 | [Правило поднятия версии и записи в CHANGELOG в регламенте](./T03-versioning-process-rule.md) | IN_REVIEW | F-012/T01 |
+| T03 | [Правило поднятия версии и записи в CHANGELOG в регламенте](./T03-versioning-process-rule.md) | IN_TESTING | F-012/T01 |
 
 Порядок реализации (рекомендация): T01 → T03 → T02 (правило попадает в регламент как можно раньше; T02 и T03
 друг от друга не зависят). Ожидаемые версии при слиянии в этом порядке: T01 — `1.0.3`, T03 — `1.0.4`, T02 — `1.0.5`.
