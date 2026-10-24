@@ -17,6 +17,8 @@
    (`503 {"status":"DOWN"}` при отказе индикатора; в Boot 4.1.2 тело может содержать также поле `groups` — имена групп
    проб `liveness`/`readiness`, без деталей; контрактом является поле `status`). По HTTP экспонируется **только** `health`, детали
    (`show-details`) не раскрываются. Собственный контроллер для health не пишется.
+   *Изменено 2026-10-24 ([ADR-0006](./ADR-0006-app-versioning.md), F-012/T02):* по HTTP экспонируются `health` и `info`
+   (`info` отдаёт только `build.name` и `build.version` из `build-info`); discovery-страница `/actuator` отключена.
 4. **Ошибки API — RFC 7807 `ProblemDetail`** включаются с первого дня: `spring.mvc.problemdetails.enabled=true`
    (в том числе 404 на неизвестный путь отдаётся как `application/problem+json`). Доменные ошибки фич будут
    маппиться в `ProblemDetail` согласно `conventions.md`.

@@ -30,6 +30,8 @@
    **не используется**. Версии библиотек без явной версии в каталоге берутся из BOM.
 6. **Координаты:** `group = "com.autostatistic"`, `version = "0.0.1-SNAPSHOT"`, базовый пакет `com.autostatistic`,
    `rootProject.name = "auto-statistic"`.
+   *Изменено 2026-10-24 ([ADR-0006](./ADR-0006-app-versioning.md), F-012/T01):* `version` больше не литерал в
+   `build.gradle.kts` — значение читается из `version.properties` (ключ `version`, формат `X.Y.Z`) с валидацией.
 7. Репозитории объявляются один раз в `settings.gradle.kts` (`dependencyResolutionManagement { repositories { mavenCentral() } }`),
    плагины — из Gradle Plugin Portal (по умолчанию).
 8. Тесты — JUnit Platform (`useJUnitPlatform()`); `org.junit.platform:junit-platform-launcher` объявляется явно
