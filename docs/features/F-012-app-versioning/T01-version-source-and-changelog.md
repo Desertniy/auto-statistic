@@ -2,7 +2,7 @@
 
 | Поле        | Значение                         |
 |-------------|----------------------------------|
-| Статус      | IN_REVIEW                        |
+| Статус      | IN_TESTING                       |
 | Фича        | [F-012](./feature.md)            |
 | Тип         | tech                             |
 | Зависит от  | —                                |
@@ -178,8 +178,31 @@
 
 <!-- ============ tech-lead ============ -->
 ## Ревью кода
-- Вердикт: — (IN_TESTING / CHANGES_REQUESTED)
+- Вердикт: **IN_TESTING** (круг 1; blocker 0, major 0, minor 2)
+- База: `main` @ `a130975`; `git log main..F-012/T01` — один коммит `b825d90`; всё, что относится к задаче, закоммичено.
+- Проверено ревьюером (2026-10-24):
+  - `./gradlew clean build` — `BUILD SUCCESSFUL` (10 тестов Kotest PASSED, `ktlint*Check` включая `ktlintKotlinScriptCheck`,
+    `detekt`); `build/libs`: `auto-statistic-1.0.2.jar`, `auto-statistic-1.0.2-plain.jar` (AC-4, AC-10).
+  - Обязательное уточнение ревью плана п. 1 выполнено: regex `semVerCore` — локальный `val` внутри `parseAppVersion`;
+    валидная версия `1.0.2` разбирается (`build`, `help` зелёные).
+  - `help -q` с временными значениями: `1.0`, `v1.0.0`, `1.0.0-SNAPSHOT`, `01.0.0` → «invalid version '<v>'»; `version=`
+    и файл без ключа → «missing or empty»; нет файла → «not found»; все — `BUILD FAILED` (AC-8). `0.0.0`, `10.20.300` →
+    `project.version` с этим значением (AC-9). Сообщения содержат имя файла, проблему, формат и пример (minor 4 плана).
+  - Configuration cache: `help --configuration-cache` — stored → reused; после правки версии — «cannot be reused because
+    file 'version.properties' has changed». Чтение только через `providers.fileContents`, без `File`/`afterEvaluate`.
+  - AC-7: `git grep "0.0.1-SNAPSHOT"` по `*.kts`, `*.properties`, `*.yaml`, `*.yml`, `src`, `gradle`, `config` — пусто;
+    литералов версии в `*.kts`/`src` нет.
+  - AC-1–AC-3: `version.properties` — ASCII, LF, `version=1.0.2`; `CHANGELOG.md` — UTF-8, LF, текст по architecture.md,
+    3 записи F-001 дословно по заголовкам файлов задач, верхняя `1.0.2` = `version.properties`. Записи `1.0.3` нет —
+    штатно (шаг оркестратора при слиянии).
+  - Временные правки `version.properties` откачены, рабочее дерево чистое.
 - Замечания (`[blocker]` / `[major]` / `[minor]`, файл:строка):
+  - [minor] `build.gradle.kts:79` — локальная `val version` внутри `parseAppVersion` затеняет `Project.version` скрипта;
+    работает корректно, но при чтении легко спутать. → При следующей правке скрипта (T02) переименовать в `rawVersion`/`value`;
+    в этой задаче править не обязательно.
+  - [minor] `docs/features/F-012-app-versioning/feature.md:144` — в журнале фичи нет строки о переходе T01 в `IN_REVIEW`
+    (в таблице задач статус обновлён, в журнале задачи строка есть). → При смене статуса задачи добавлять строку и в
+    журнал фичи; отдельной правки не требуется.
 
 <!-- ============ qa-engineer ============ -->
 ## Тестирование
@@ -199,3 +222,4 @@
 | 2026-10-24 | tech-lead | PLAN_REVIEW → READY | Ревью плана: READY. Чтение через `providers.fileContents`, configuration cache (reuse + инвалидация), негативные сценарии и ktlint на `*.gradle.kts` проверены экспериментом во временной копии. Обязательно: regex — локальный `val` в функции или выше строки `version = ...` (top-level `val` ниже вызова = NPE, воспроизведено); 3 minor |
 | 2026-10-24 | kotlin-backend-developer | READY → IN_PROGRESS | Ветка `F-012/T01` создана от `main` (`a130975`) |
 | 2026-10-24 | kotlin-backend-developer | IN_PROGRESS → IN_REVIEW | `version.properties` (1.0.2), `CHANGELOG.md` (3 записи F-001), `parseAppVersion` в `build.gradle.kts` (regex — локальный `val`, сообщения с примером). `clean build` зелёный (10/10 тестов, ktlint, detekt) на `gradlew` и `gradlew.bat`; AC-5–AC-9 и configuration cache проверены вручную, временные правки откачены |
+| 2026-10-24 | tech-lead | IN_REVIEW → IN_TESTING | Ревью кода, круг 1: blocker 0, major 0, minor 2. `clean build` зелёный, jar `auto-statistic-1.0.2.jar`; regex — локальный `val` (уточнение плана выполнено); негативные/граничные значения, сообщения и configuration cache (reuse + инвалидация) проверены вручную |
