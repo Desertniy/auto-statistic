@@ -6,7 +6,7 @@
 | ID | Название | Статус | Задачи (done/всего) | Каталог |
 |----|----------|--------|---------------------|---------|
 | F-001 | Базовый Gradle-проект | DONE | 3/3 | [F-001-project-bootstrap](./F-001-project-bootstrap/feature.md) |
-| F-002 | Регистрация и вход с согласием на обработку ПДн | DRAFT | 0/7 | [F-002-registration-login](./F-002-registration-login/feature.md) |
+| F-002 | Регистрация и вход с согласием на обработку ПДн | READY | 0/7 | [F-002-registration-login](./F-002-registration-login/feature.md) |
 | F-003 | Безопасность аккаунта: сессии, пароли, защита от перебора | DRAFT | 0/5 | [F-003-account-security](./F-003-account-security/feature.md) |
 | F-004 | Карточка автомобиля и изоляция данных | DRAFT | 0/3 | [F-004-car-card](./F-004-car-card/feature.md) |
 | F-005 | Статусы автомобилей и история машины | DRAFT | 0/5 | [F-005-car-statuses-history](./F-005-car-statuses-history/feature.md) |

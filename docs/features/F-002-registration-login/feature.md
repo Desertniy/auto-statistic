@@ -2,7 +2,7 @@
 
 | Поле     | Значение                                   |
 |----------|--------------------------------------------|
-| Статус   | DRAFT                                      |
+| Статус   | READY                                      |
 | Автор    | product-manager                            |
 | Создана  | 2026-10-24                                 |
 | Приоритет| Must                                       |
@@ -71,15 +71,16 @@
 ## Задачи
 | ID  | Название | Статус | Зависит от |
 |-----|----------|--------|------------|
-| T01 | [Постоянное хранение данных и тестовое окружение](./T01-data-storage.md) | DRAFT | F-001 |
-| T02 | [Версии политики конфиденциальности и согласия](./T02-privacy-policy-versions.md) | DRAFT | F-002/T01 |
-| T03 | [Отправка писем: конфигурация и dev-заглушка](./T03-email-sending.md) | DRAFT | F-001 |
-| T04 | [Регистрация с согласием и проверкой пароля](./T04-registration.md) | DRAFT | F-002/T01, F-002/T02, F-002/T03 |
-| T05 | [Подтверждение email и повторная отправка письма](./T05-email-confirmation.md) | DRAFT | F-002/T04 |
-| T06 | [Вход, выход и защита API](./T06-login-logout.md) | DRAFT | F-002/T05 |
-| T07 | [Журнал аудита событий безопасности](./T07-security-audit-log.md) | DRAFT | F-002/T06 |
+| T01 | [Постоянное хранение данных и тестовое окружение](./T01-data-storage.md) | READY | F-001 |
+| T02 | [Версии политики конфиденциальности и согласия](./T02-privacy-policy-versions.md) | READY | F-002/T01 |
+| T03 | [Отправка писем: конфигурация и dev-заглушка](./T03-email-sending.md) | READY | F-002/T02 |
+| T04 | [Регистрация с согласием и проверкой пароля](./T04-registration.md) | READY | F-002/T01, F-002/T02, F-002/T03 |
+| T05 | [Подтверждение email и повторная отправка письма](./T05-email-confirmation.md) | READY | F-002/T04 |
+| T06 | [Вход, выход и защита API](./T06-login-logout.md) | READY | F-002/T05 |
+| T07 | [Журнал аудита событий безопасности](./T07-security-audit-log.md) | READY | F-002/T06 |
 
 Порядок реализации: T01 → T02 → T03 → T04 → T05 → T06 → T07.
+Архитектура — [architecture.md](./architecture.md), ADR-0007…ADR-0012.
 
 ## Открытые вопросы
 - (нет) Решения пользователя — в PRD 11.1. Домен, адрес отправителя и юридические тексты отложены (PRD O1, O3),
@@ -89,3 +90,7 @@
 | Дата | Агент | Изменение статуса | Комментарий |
 |------|-------|-------------------|-------------|
 | 2026-10-24 | product-manager | — → DRAFT | Фича выделена из MVP (PRD, карта фич), декомпозиция на T01–T07 |
+| 2026-11-08 | architect | DRAFT → DESIGN | architecture.md, ADR-0007…0012 (PostgreSQL/Flyway/JdbcClient/Testcontainers, Arrow и формат ошибок API, bearer-сессии в PostgreSQL, Argon2id, SMTP + заглушка, журнал аудита); техпланы T01–T07 → PLAN_REVIEW; T03 теперь зависит от T02 (Arrow, тестовая инфраструктура); продуктовые AC не менялись |
+| 2026-11-08 | tech-lead | DESIGN → DESIGN | Ревью плана: T01–T03, T05–T07 READY; T04 NEEDS_REWORK → architect (гонка DuplicateKeyException в транзакции PostgreSQL); conventions.md синхронизирован с ADR-0007…0012. Фича остаётся DESIGN до READY всех задач |
+| 2026-11-08 | architect | DESIGN → DESIGN | T04 NEEDS_REWORK → PLAN_REVIEW: занятый email через `INSERT … ON CONFLICT (email) DO NOTHING` + чтение в той же транзакции (гонка без aborted-транзакции, `existingUserId` всегда известен — таблица аудита T07 не меняется); уточнены ADR-0007 п. 3 и ADR-0010 п. 3, architecture.md (`PasswordPolicy` с `email?`, коды версий, поток регистрации, `mutableClock()`). Декомпозиция не менялась |
+| 2026-11-08 | tech-lead | DESIGN → READY | Повторное ревью плана T04: READY (2 minor на реализацию); все задачи T01–T07 READY; conventions.md «База данных» синхронизирован с ADR-0007 п. 3 (`ON CONFLICT` — основной путь, `DuplicateKeyException` — запасной) |
